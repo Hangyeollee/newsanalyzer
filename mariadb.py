@@ -72,20 +72,20 @@ class MariaDB():
             else:
                 print(err)
         else:
-            #today = datetime.today().strftime('%Y-%m-%d')
+            today = datetime.today().strftime('%Y-%m-%d')
             cur = cnx.cursor()
-            cur.execute('select count(*) as cnt from swedish_words where word = \'{}\''.format(word))
+            cur.execute('select count(*) as cnt from swedish_words where word = \'{}\' and id = \'{}\''.format(word, today))
             #for row in cur.fetchall():
             #    print(row)
             row = cur.fetchone()
             cnt = int(row[0])
             if cnt == 0:
                 print(word)
-                cur.execute('insert into swedish_words (word, count) values (\'{}\',1)'.format(word))
+                cur.execute('insert into swedish_words (word, count, id) values (\'{}\',1, \'{}\')'.format(word, today))
                 cnx.commit()
             else:
                 print(word)
-                cur.execute('update swedish_words set count = count+1 where word = \'{}\''.format(word))
+                cur.execute('update swedish_words set count = count+1 where word = \'{}\' and id = \'{}\''.format(word, today))
                 cnx.commit()
         finally:
             if cur:
